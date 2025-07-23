@@ -89,3 +89,20 @@ function backToHome() {
   home.style.display = "block";
   history.style.display = "none";
 }
+function resetAll() {
+  // ล้างรายการที่ซื้อ
+  purchases = [];
+  renderPurchases();
+
+  // ล้างผลรางวัล
+  document.getElementById("box2").textContent = "--";
+  document.getElementById("box3").textContent = "---";
+  document.getElementById("box4").textContent = "----";
+
+  // ล้างข้อความผลลัพธ์
+  document.getElementById("resultMsg").textContent = "";
+
+  // ล้างประวัติ (หากต้องการด้วย)
+  spinHist = [];
+  renderHistory();
+}
