@@ -1,246 +1,54 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>แก้ไข ระบบออกรางวัล</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f0f4f8;
-            margin: 0;
-            padding: 0;
-        }
-
-        nav {
-            background-color: #4CAF50;
-            overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        nav ul {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-        }
-
-        nav ul li {
-            float: left;
-        }
-
-        nav ul li a {
-            display: block;
-            color: white;
-            padding: 16px 20px;
-            text-decoration: none;
-            text-align: center;
-            font-size: 18px;
-            transition: background-color 0.3s;
-        }
-
-        nav ul li a:hover {
-            background-color: #45a049;
-        }
-
-        .container {
-            background-color: white;
-            border-radius: 15px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-            padding: 40px;
-            margin-top: 30px;
-            width: 80%;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-            text-align: center;
-        }
-
-        h1 {
-            color: #333;
-            font-size: 40px;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-
-        .prize-box {
-            display: inline-block;
-            background-color: #f28d0c;
-            color: white;
-            font-size: 32px;
-            font-weight: bold;
-            padding: 15px 25px;
-            border-radius: 12px;
-            margin: 15px 25px;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        button {
-            background-color: #008CBA;
-            color: white;
-            font-size: 20px;
-            padding: 18px 35px;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            margin-top: 30px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        button:hover {
-            background-color: #006f8e;
-        }
-
-        footer {
-            background-color: #333;
-            color: white;
-            text-align: center;
-            padding: 15px;
-            position: fixed;
-            left: 0;
-            bottom: 0;
-            width: 100%;
-        }
-
-        footer p {
-            font-size: 16px;
-            margin: 0;
-        }
-
-        .history {
-            margin-top: 30px;
-            font-size: 18px;
-            color: #333;
-            padding: 20px;
-            background-color: #f9f9f9;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        ul {
-            list-style-type: none;
-            padding: 0;
-            font-size: 18px;
-            margin-top: 10px;
-        }
-
-        li {
-            margin: 10px 0;
-            padding: 10px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .back-btn {
-            background-color: #4CAF50;
-            color: white;
-            font-size: 20px;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            margin-top: 20px;
-        }
-
-        .back-btn:hover {
-            background-color: #45a049;
-        }
-
-    </style>
+    <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ระบบออกรางวัล + ซื้อเลข</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
-<!-- Navbar -->
+<script src="script.js"></script>
 <nav>
-    <ul>
-        <li><a href="#home">หน้าแรก</a></li>
-        <li><a href="#history" onclick="showHistory()">ประวัติรางวัล</a></li>
-    </ul>
+  <ul>
+    <li><a href="#home">armlnwza</a></li>
+    <li><a href="#history" onclick="showHistory()">.com</a></li>
+  </ul>
 </nav>
 
-<!-- Main Content (หน้าแรก) -->
 <div class="container" id="home">
-    <h1>ระบบออกรางวัล</h1>
-    <p>กดปุ่มเพื่อออกรางวัล (2, 3, และ 4 ตัวพร้อมกัน)</p>
+  <h1>ระบบออกรางวัล + ซื้อเลข</h1>
 
-    <!-- แสดงผลรางวัล -->
-    <div class="prizes" id="prizeDisplay">--- รางวัล ---</div>
+  <form onsubmit="buyNumber(event)">
+    <input id="buyNum" placeholder="เลข 2–4 หลัก" required />
+    <input id="buyAmt" type="number" placeholder="จำนวนเงิน" required />
+    <button type="submit">ซื้อเลข</button>
+  </form>
 
-    <!-- ปุ่มสำหรับออกรางวัล 2, 3, และ 4 ตัวพร้อมกัน -->
-    <button onclick="drawPrize()">ออกรางวัลทั้งหมด</button>
+  <h3>รายการที่ซื้อ</h3>
+  <ul id="purchaseList"></ul>
+
+  <h2>หมุนออกรางวัล</h2>
+  <div class="prizes">
+    <div class="prize-box" id="box2">--</div>
+    <div class="prize-box" id="box3">---</div>
+    <div class="prize-box" id="box4">----</div>
+  </div>
+  <button onclick="spin()">หมุนรางวัล</button>
+
+  <p id="resultMsg"></p>
 </div>
 
-<!-- History Section (ประวัติการออกรางวัล) -->
-<div class="container" id="history" style="display: none;">
-    <h1>ประวัติการออกรางวัล</h1>
-    <div class="history">
-        <ul id="historyList">
-            <!-- ประวัติการออกรางวัลจะแสดงที่นี่ -->
-        </ul>
-    </div>
-    <!-- ปุ่มกลับไปหน้าแรก -->
-    <button class="back-btn" onclick="backToHome()">กลับสู่หน้าแรก</button>
+<div class="container" id="history" style="display:none;">
+  <h1>ประวัติการออกรางวัล</h1>
+  <ul id="historyList"></ul>
+  <button class="back-btn" onclick="backToHome()">กลับสู่หน้าแรก</button>
 </div>
 
-<!-- Footer -->
 <footer>
-    <p>&copy; 2025 ระบบออกรางวัล | ทุกสิทธิ์ถูกสงวนไว้</p>
+  <p>&copy; 2025 ระบบออกรางวัล | ทุกสิทธิ์ถูกสงวนไว้</p>
 </footer>
 
-<script>
-    // ประวัติการออกรางวัล
-    let history = [];
-
-    // ฟังก์ชั่นสุ่มหมายเลขรางวัล
-    function generatePrize(digits) {
-        let max = Math.pow(10, digits); // ขอบเขตสูงสุดของตัวเลขตามจำนวนหลัก
-        let prize = Math.floor(Math.random() * max); // สุ่มตัวเลข
-        return prize.toString().padStart(digits, '0'); // ให้ตัวเลขมีหลักที่ต้องการ
-    }
-
-    // ฟังก์ชั่นสุ่มรางวัลทั้งหมด
-    function drawPrize() {
-        let prize2 = generatePrize(2); // รางวัล 2 ตัว
-        let prize3 = generatePrize(3); // รางวัล 3 ตัว
-        let prize4 = generatePrize(4); // รางวัล 4 ตัว
-
-        // แสดงผลรางวัลทั้งหมดในหน้าแรก
-        document.getElementById("prizeDisplay").innerHTML = `
-            <p>รางวัล 2 ตัว: <span class="prize-box">${prize2}</span></p>
-            <p>รางวัล 3 ตัว: <span class="prize-box">${prize3}</span></p>
-            <p>รางวัล 4 ตัว: <span class="prize-box">${prize4}</span></p>
-        `;
-
-        // บันทึกประวัติการออกรางวัล
-        history.push(`รางวัล 2 ตัว: ${prize2}, รางวัล 3 ตัว: ${prize3}, รางวัล 4 ตัว: ${prize4}`);
-
-        // อัพเดตประวัติการออกรางวัลในหน้า History
-        updateHistory();
-    }
-
-    // ฟังก์ชั่นอัพเดตประวัติ
-    function updateHistory() {
-        let historyList = document.getElementById("historyList");
-        historyList.innerHTML = ''; // เคลียร์รายการเดิม
-
-        // เพิ่มรายการประวัติใหม่
-        history.forEach(item => {
-            let li = document.createElement("li");
-            li.textContent = item;
-            historyList.appendChild(li);
-        });
-    }
-
-    // ฟังก์ชั่นแสดงหน้า History
-    function showHistory() {
-        document.getElementById("home").style.display = 'none';
-        document.getElementById("history").style.display = 'block';
-    }
-
-    // ฟังก์ชั่นกลับไปหน้าแรก
-    function backToHome() {
-        document.getElementById("home").style.display = 'block';
-        document.getElementById("history").style.display = 'none';
-    }
-</script>
-
+<script src="script.js"></script>
 </body>
 </html>

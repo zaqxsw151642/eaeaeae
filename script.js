@@ -1,51 +1,91 @@
-// ประวัติการออกรางวัล (เก็บไว้ในอาร์เรย์)
-let history = [];
+let purchases = [], spinHist = [];
 
-// ฟังก์ชั่นสุ่มหมายเลขรางวัล
-function generatePrize(digits) {
-    let max = Math.pow(10, digits); // ขอบเขตสูงสุดของตัวเลขตามจำนวนหลัก
-    let prize = Math.floor(Math.random() * max); // สุ่มตัวเลข
-    return prize.toString().padStart(digits, '0'); // ให้ตัวเลขมีหลักที่ต้องการ
+function buyNumber(e) {
+  e.preventDefault();
+  const num = buyNum.value.trim();
+  const amt = parseInt(buyAmt.value);
+
+  if (!/^\d{2,4}$/.test(num) || amt <= 0) {
+    alert("กรุณากรอกเลข 2-4 หลัก และจำนวนเงินให้ถูกต้อง");
+    return;
+  }
+
+  purchases.push({ number: num, amount: amt });
+  renderPurchases();
+  buyNum.value = "";
+  buyAmt.value = "";
 }
 
-// ฟังก์ชั่นสุ่มรางวัลทั้งหมด
-function drawPrize() {
-    let prize2 = generatePrize(2); // รางวัล 2 ตัว
-    let prize3 = generatePrize(3); // รางวัล 3 ตัว
-    let prize4 = generatePrize(4); // รางวัล 4 ตัว
-
-    // แสดงผลรางวัลทั้งหมด
-    console.log("รางวัล 2 ตัว: " + prize2);
-    console.log("รางวัล 3 ตัว: " + prize3);
-    console.log("รางวัล 4 ตัว: " + prize4);
-
-    // บันทึกประวัติการออกรางวัล
-    history.push(`รางวัล 2 ตัว: ${prize2}, รางวัล 3 ตัว: ${prize3}, รางวัล 4 ตัว: ${prize4}`);
-
-    // แสดงประวัติการออกรางวัล
-    updateHistory();
+function renderPurchases() {
+  purchaseList.innerHTML = "";
+  purchases.forEach(p => {
+    const li = document.createElement("li");
+    li.textContent = `เลข ${p.number} - ${p.amount} บาท`;
+    purchaseList.appendChild(li);
+  });
 }
 
-// ฟังก์ชั่นอัพเดตประวัติ
-function updateHistory() {
-    console.log("\n--- ประวัติการออกรางวัล ---");
-    history.forEach((item, index) => {
-        console.log(`${index + 1}: ${item}`);
-    });
+function spin() {
+  const results = {};
+  const digits = [2, 3, 4];
+  let completed = 0;
+
+  digits.forEach(dig => {
+    let ele = document.getElementById("box" + dig);
+    let count = 20;
+    let interval = setInterval(() => {
+      let random = Math.floor(Math.random() * Math.pow(10, dig)).toString().padStart(dig, '0');
+      ele.textContent = random;
+      if (--count <= 0) {
+        clearInterval(interval);
+        results[dig] = random;
+        completed++;
+        if (completed === digits.length) {
+          saveSpin(results);
+          checkWinning(results);
+        }
+      }
+    }, 80);
+  });
 }
 
-// ฟังก์ชั่นแสดงประวัติ
-function showHistory() {
-    if (history.length === 0) {
-        console.log("ยังไม่มีการออกรางวัล!");
-    } else {
-        console.log("\n--- ประวัติการออกรางวัล ---");
-        history.forEach((item, index) => {
-            console.log(`${index + 1}: ${item}`);
-        });
+function checkWinning(results) {
+  let matched = [];
+
+  purchases.forEach(p => {
+    const len = p.number.length;
+    if (results[len] === p.number) {
+      matched.push(`🎉 ถูก ${len} ตัว: ${p.number} ได้ ${p.amount * 100} บาท`);
     }
+  });
+
+  const msg = matched.length
+    ? `✅ คุณถูกรางวัล!\n${matched.join('\n')}`
+    : "❌ ไม่ถูกรางวัล ลองใหม่อีกครั้ง!";
+  document.getElementById("resultMsg").textContent = msg;
 }
 
-// การทดสอบ
-drawPrize();  // เรียกใช้การสุ่มรางวัล
-showHistory();  // แสดงประวัติการออกรางวัล
+function saveSpin(results) {
+  const resultText = `2 ตัว: ${results[2]}, 3 ตัว: ${results[3]}, 4 ตัว: ${results[4]}`;
+  spinHist.push(resultText);
+  renderHistory();
+}
+
+function renderHistory() {
+  historyList.innerHTML = "";
+  spinHist.forEach(item => {
+    const li = document.createElement("li");
+    li.textContent = item;
+    historyList.appendChild(li);
+  });
+}
+
+function showHistory() {
+  home.style.display = "none";
+  history.style.display = "block";
+}
+
+function backToHome() {
+  home.style.display = "block";
+  history.style.display = "none";
+}
